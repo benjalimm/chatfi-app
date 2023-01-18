@@ -1,0 +1,60 @@
+.main {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-y: scroll;
+  overflow-anchor: auto;
+}
+
+.message {
+  height: auto;
+  display: flex;
+  font-size: 13px;
+  width: 100%;
+  font: 'Inter';
+  animation: fadeInFromBottom 0.1s ease-in-out;
+}
+
+.bot {
+  justify-content: flex-start;
+}
+
+.user {
+  justify-content: flex-end;
+}
+
+.bubble {
+  width: auto;
+  max-width: 80%;
+  padding: 1rem;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+.botBubble {
+  background-color: #282828;
+  margin-left: 10px;
+  margin-right: 0px;
+}
+
+.userBubble {
+  background-color: #474747;
+  margin-right: 10px;
+  margin-left: 0px;
+}
+
+
+@keyframes fadeInFromBottom {
+  0% {
+    opacity: 0.5;
+    transform: translateY(10%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
