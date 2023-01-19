@@ -6,19 +6,22 @@ import MessagesContainer from './MessagesContainer';
 
 
 
-
-export default function ChatView() {
+type Props = { 
+  messages: Message[],
+  onMessage: (message: string) => void, 
+  isChatLoading: boolean
+}
+export default function ChatView({ messages, onMessage, isChatLoading }: Props) {
   const [currentInputText, setCurrentInputText] = useState<string>("");
 
-  const [messages, setMessages] = useState<Message[]>([{ id: "", text: `You can type any query that pertains to Coinbase's latest 10-Q. For example, you could ask something like "What acquisitions did Coinbase make in 2022?"`, isBot: true }]);
 
   function onChange(event: React.FormEvent<HTMLInputElement>) {
     setCurrentInputText(event.currentTarget.value);
   }
 
   function onEnter() {
-    setMessages([...messages, { id: "", text: currentInputText, isBot: false }]);
     setCurrentInputText("");
+    onMessage(currentInputText);
   }
 
   return <div className={style.main}>
@@ -27,6 +30,7 @@ export default function ChatView() {
     onChange={onChange} 
     text={currentInputText}
     onEnter={onEnter}
+    isChatLoading={isChatLoading}
     />
   </div>
 }
