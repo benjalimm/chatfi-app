@@ -10,39 +10,14 @@ import { useEffect, useState } from 'react'
 import { Value } from '@/schema/Value'
 
 const inter = Inter({ subsets: ['latin'] })
-const socket = io("http://localhost:3000")
+const socket = io("https://damp-springs-38226.herokuapp.com")
 
 export default function Home() {
 
-    const [messages, setMessages] = useState<Message[]>([{ id: "", text: `You can type any query that pertains to Coinbase's latest 10-Q. For example, you could ask something like "What acquisitions did Coinbase make in 2022?"`, isBot: true }]);
+  const [messages, setMessages] = useState<Message[]>([{ id: "", text: `You can type any query that pertains to Coinbase's latest 10-Q. For example, you could ask something like "What acquisitions did Coinbase make in 2022?"`, isBot: true }]);
 
-    const [values, setValues] = useState<Value[]>([{
-        key: "Acquisitions",
-        value: 200000,
-        title: "Acquisitions",
-        statementSource: "BalanceSheets",
-        date: "2022-12-31 to 2022-12-31",
-        multiplier: "NONE",
-        unit: "$",
-    }, {
-        key: "Acquisitions",
-        value: 200000,
-        title: "Acquisitions",
-        statementSource: "BalanceSheets",
-        date: "2022-12-31 to 2022-12-31",
-        multiplier: "NONE",
-        unit: "$",
-    }, {
-        key: "Acquisitions",
-        value: 200000,
-        title: "Acquisitions",
-        statementSource: "BalanceSheets",
-        date: "2022-12-31 to 2022-12-31",
-        multiplier: "NONE",
-        unit: "$",
-    },
-  ]);
-
+  const [values, setValues] = useState<Value[]>([])  
+  const isValuesEmpty = values.length < 1;
   const [isChatLoading, setIsChatLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -105,7 +80,7 @@ export default function Home() {
       </Head>
       <main className={`${styles.main} ${inter.className}`}>
         <div className={styles.content}>
-          <DataView values={values} />
+          <DataView values={values} customStyle={{ display: isValuesEmpty ?"none" : "grid"}}/>
           <ChatView messages={messages}
           onMessage={onMessage}
           isChatLoading={isChatLoading}

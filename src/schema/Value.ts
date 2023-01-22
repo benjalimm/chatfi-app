@@ -1,9 +1,9 @@
 export type Value = {
   key: string;
-  value: number;
+  value: string;
   unit: string;
   title: string;
   statementSource: string;
-  date: string;
+  sectionSource: string;
   multiplier: 'NONE' | 'IN_THOUSANDS' | 'IN_MILLIONS';
 };
