@@ -11,6 +11,7 @@ import { Value } from '@/schema/Value'
 
 const inter = Inter({ subsets: ['latin'] })
 const socket = io("https://damp-springs-38226.herokuapp.com")
+// const socket = io("http://localhost:3000")
 
 export default function Home() {
 
