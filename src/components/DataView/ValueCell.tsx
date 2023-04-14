@@ -1,8 +1,17 @@
 import style from "./ValueCell.module.css"
 import { Value } from "@/schema/Value"
-import { outputValueString } from "@/utils/valueUtils";
+import { camelCaseToNormalText, outputValueString } from "@/utils/valueUtils";
 
-export default function ValueCell({value, inlineStyle}: {value: Value, inlineStyle: React.CSSProperties}) {
+type Props = {
+  value: Value, 
+  inlineStyle: React.CSSProperties,
+  onClick?: () => void
+}
+export default function ValueCell({ 
+  value, 
+  inlineStyle,
+  onClick
+}:  Props) {
 
   const isNegativeValue = parseFloat(value.value) < 0;
   // Parse value string
@@ -30,11 +39,11 @@ export default function ValueCell({value, inlineStyle}: {value: Value, inlineSty
   const valueStyles = isNegativeValue ? 
   `${style.value} ${style.negativeValue}` : style.value
 
-  return <div className={style.main} style={inlineStyle}>
+  return <div className={style.main} style={inlineStyle} onClick={onClick}>
     <div className={style.container}>
       <span className={style.title}>{title}</span>
       <span className={valueStyles}>{valueString}</span>
-      <span className={style.statementSource}>{statementSource}</span>
+      <span className={style.statementSource}>{camelCaseToNormalText(statementSource)}</span>
     </div>
     
   </div>
