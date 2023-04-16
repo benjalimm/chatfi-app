@@ -138,7 +138,6 @@ export default function Home() {
         <Modal show={showModal} handleClose={closeModal}>
           <FinancialStatement 
           tableOfLineItems={lineItems}  
-          statementType={getTableType()}
           />
         </Modal>
       </main>
