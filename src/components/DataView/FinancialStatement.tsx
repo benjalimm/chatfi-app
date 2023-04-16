@@ -4,9 +4,11 @@ import { formatCurrencyNumber, camelCaseToNormalText, formatDateRange, convertDa
 
 type FinancialStatementProps = {
   tableOfLineItems: TableOfLineItems;
+  highlightInfo?: { sectionKey: string, value: number }
 };
 
-const FinancialStatement: React.FC<FinancialStatementProps> = ({ tableOfLineItems }) => {
+const FinancialStatement: React.FC<FinancialStatementProps> = ({ 
+  tableOfLineItems, highlightInfo }) => {
 
   const lineItemGroups: { [key: string]: LineItem[] } = {};
   Object.entries(tableOfLineItems).forEach(([key, lineItems]) => {
@@ -39,6 +41,13 @@ const FinancialStatement: React.FC<FinancialStatementProps> = ({ tableOfLineItem
     return formatDateRange(key)
   }
 
+  function isHighlighted(lineItemKey: string, value: number | null): boolean {
+    if (!highlightInfo) return false;
+
+    const { sectionKey, value: highlightValue } = highlightInfo;
+    return lineItemKey === sectionKey && value === highlightValue;
+  }
+
   return (
     <div className="w-full h-full">
       <table className="w-full h-full table-auto">
@@ -63,9 +72,12 @@ const FinancialStatement: React.FC<FinancialStatementProps> = ({ tableOfLineItem
                   return periodKey === itemDate;
                 });
 
+                const value = lineItem ? parseInt(lineItem.value) : null;
+                const highlightClass = isHighlighted(key, value) ? 'bg-green-500' : '';
+
                 return (
-                  <td key={getKeyFromPeriod(period)} className="border px-4 py-2">
-                    {lineItem ? formatCurrencyNumber(parseInt(lineItem.value)) : '-'}
+                  <td key={getKeyFromPeriod(period)} className={`border px-4 py-2 ${highlightClass}`}>
+                    {lineItem && value ? formatCurrencyNumber(value) : '-'}
                   </td>
                 );
               })}
