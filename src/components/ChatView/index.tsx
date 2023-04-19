@@ -1,8 +1,10 @@
 import { Message } from '@/schema/Message';
 import React, { useRef, useState } from 'react';
 import ChatInput from './ChatInput';
-import style from "./index.module.css";
+import style from "./index.module.css"
 import MessagesContainer from './MessagesContainer';
+
+
 
 type Props = { 
   messages: Message[],
