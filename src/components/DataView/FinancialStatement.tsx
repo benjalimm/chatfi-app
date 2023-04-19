@@ -10,24 +10,6 @@ type FinancialStatementProps = {
 const FinancialStatement: React.FC<FinancialStatementProps> = ({ 
   tableOfLineItems, highlightInfo }) => {
 
-  const lineItemGroups: { [key: string]: LineItem[] } = {};
-  Object.entries(tableOfLineItems).forEach(([key, lineItems]) => {
-    if (!lineItemGroups[key]) {
-      lineItemGroups[key] = [];
-    }
-    lineItemGroups[key] = [...lineItemGroups[key], ...lineItems];
-  });
-
-  const periods: Period[] = [];
-  Object.values(lineItemGroups).forEach((lineItems) => {
-    lineItems.forEach((item) => {
-      if (!periods.find((period) => getKeyFromPeriod(period) === getKeyFromPeriod(item.period))) {
-        periods.push(item.period);
-      }
-      
-    });
-  });
-
   function getKeyFromPeriod(period: Period): string {
     return isInstantPeriod(period) ? period.instant : `${period.startDate} - ${period.endDate}`;
   }
@@ -48,13 +30,33 @@ const FinancialStatement: React.FC<FinancialStatementProps> = ({
     return lineItemKey === sectionKey && value === highlightValue;
   }
 
+  // 1. Group line items by section
+  const lineItemGroups: { [key: string]: LineItem[] } = {};
+  Object.entries(tableOfLineItems).forEach(([key, lineItems]) => {
+    if (!lineItemGroups[key]) {
+      lineItemGroups[key] = [];
+    }
+    lineItemGroups[key] = [...lineItemGroups[key], ...lineItems];
+  });
+
+  // 2. Get all periods
+  const periods: Period[] = [];
+  Object.values(lineItemGroups).forEach((lineItems) => {
+    lineItems.forEach((item) => {
+      if (!periods.find((period) => getKeyFromPeriod(period) === getKeyFromPeriod(item.period))) {
+        periods.push(item.period);
+      }
+      
+    });
+  });
+  
   return (
     <div className="w-full h-full">
       <table className="w-full h-full table-auto">
         <thead>
           <tr>
             <th className="border px-4 py-2">Line Item</th>
-            {periods.map((period) => (
+            { periods.map((period) => (
               <th key={getKeyFromPeriod(period)} className="border px-4 py-2">
                 {getDateStringFromPeriod(period)}
               </th>
