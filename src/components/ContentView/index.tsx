@@ -16,11 +16,9 @@ export default function ContentView() {
     showModal,
     lineItems,
     highlightInfo,
-    listOfStatementData,
     onValueSelected,
     onMessage,
-    closeModal,
-    openModal
+    closeModal
    } = useContentViewModel()
   
   return <main className={`${styles.main} ${inter.className}`}>

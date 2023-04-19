@@ -3,16 +3,9 @@ import { Message } from '@/schema/Message';
 import { Value } from '@/schema/Value'
 import { TableOfLineItems } from '@/schema/TableOfLineItems'
 import { StatementData } from '@/schema/StatementData'
+import useChatMessenger from '@/services/data/useChatMessenger';
 
-import io from 'socket.io-client'
-
-
-
-const domain = "http://localhost:3000"
-// const socket = io("https://damp-springs-38226.herokuapp.com")
-const socket = io(domain)
-
-interface ViewModel {
+type ViewModel = {
   values: Value[],
   messages: Message[],
   isChatLoading: boolean,
@@ -29,14 +22,18 @@ interface ViewModel {
 }
 
 export default function useContentViewModel(): ViewModel {
-  const [messages, setMessages] = useState<Message[]>([{ id: "", text: `You can type any query that pertains to Coinbase's latest 10-Q. For example, you could ask something like "What acquisitions did Coinbase make in 2022?"`, isBot: true }]);
+  const { 
+    messages, 
+    values, 
+    listOfStatementData, 
+    isChatLoading,
+    sendMessage
+  } = useChatMessenger()
 
-  const [values, setValues] = useState<Value[]>([])  
-  const [isChatLoading, setIsChatLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(true);
   const [lineItems, setLineItems] = useState<TableOfLineItems>()
   const [highlightInfo, setHighlightInfo] = useState<{ sectionKey: string, value: number }>()
-  const [listOfStatementData, setListOfStatementData] = useState<StatementData[]>([])
+
 
   function openModal() {
     setShowModal(true);
@@ -44,66 +41,6 @@ export default function useContentViewModel(): ViewModel {
 
   function closeModal() {
     setShowModal(false);
-  }
-
-  useEffect(() => {
-    socket.on(`connect`, () => {
-      console.log("Connected")      
-    })
-    
-    socket.on("message", (res) => {
-      const json = JSON.parse(res)
-      console.log(`RES: ${res}`)
-
-      // 1.  Update messages
-      const message: Message = {
-        id: "",
-        text: json.data.answer,
-        isBot: true
-      }
-      setMessages((messages) => [...messages, message])
-
-      // 2. Check for values and update if present
-      const valuesJSON = json.data.metadata?.values
-
-      if (valuesJSON) {
-        const values = valuesJSON as Value[]
-
-        if (values.length > 0) {
-          setValues(values)
-        }
-      }
-
-      // 3. Check for statement data
-      const statementDataJSON = json.data.metadata?.listOfStatementData
-
-      if (statementDataJSON) {
-        const listOfStatementData = statementDataJSON as StatementData[]
-        setListOfStatementData(listOfStatementData)
-      }
-    })
-
-    socket.on("loading", (res) => {
-      const json = JSON.parse(res)
-      const loading = json.data.loading
-      setIsChatLoading(loading === true)
-    })
-
-    return () => {
-      socket.off('connect')
-      socket.off("message")
-      socket.off("loading")
-    }
-  },[])
-
-  function onMessage(message: string) {
-    socket.emit("query", { query: message })
-    const userMessage: Message = {
-      id: "",
-      text: message,
-      isBot: false
-    }
-    setMessages((messages) => [...messages, userMessage])
   }
 
   async function onValueSelected(value: Value) {
@@ -138,7 +75,7 @@ export default function useContentViewModel(): ViewModel {
     highlightInfo,
     listOfStatementData,
     onValueSelected,
-    onMessage,
+    onMessage: sendMessage,
     closeModal,
     openModal,
   }

@@ -14,7 +14,6 @@ type Props = {
 export default function ChatView({ messages, onMessage, isChatLoading }: Props) {
   const [currentInputText, setCurrentInputText] = useState<string>("");
 
-
   function onChange(event: React.FormEvent<HTMLInputElement>) {
     setCurrentInputText(event.currentTarget.value);
   }
