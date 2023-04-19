@@ -2628,4 +2628,4 @@ export const instantStringData = `{
 			}
 		]
 	}
-}`
+}`;
