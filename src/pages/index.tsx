@@ -15,6 +15,7 @@ import { Value } from '@/schema/Value'
 import FinancialStatement from '@/components/DataView/FinancialStatement'
 import { instantStringData } from 'sampleData/instantData'
 import { isRangePeriod, TableOfLineItems } from '@/schema/TableOfLineItems'
+import { StatementData } from '@/schema/StatementData'
 
 const inter = Inter({ subsets: ['latin'] })
 const domain = "http://localhost:3000"
@@ -30,6 +31,8 @@ export default function Home() {
   const [isChatLoading, setIsChatLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(true);
   const [lineItems, setLineItems] = useState<TableOfLineItems>(data)
+  const [highlightInfo, setHighlightInfo] = useState<{ sectionKey: string, value: number }>()
+  const [listOfStatementData, setListOfStatementData] = useState<StatementData[]>([])
 
   function openModal() {
     setShowModal(true);
@@ -43,11 +46,12 @@ export default function Home() {
     socket.on(`connect`, () => {
       console.log("Connected")      
     })
+    
     socket.on("message", (res) => {
       const json = JSON.parse(res)
       console.log(`RES: ${res}`)
 
-      // Update messages
+      // 1.  Update messages
       const message: Message = {
         id: "",
         text: json.data.answer,
@@ -55,7 +59,7 @@ export default function Home() {
       }
       setMessages((messages) => [...messages, message])
 
-      // Check for values and update if present
+      // 2. Check for values and update if present
       const valuesJSON = json.data.metadata?.values
 
       if (valuesJSON) {
@@ -64,6 +68,14 @@ export default function Home() {
         if (values.length > 0) {
           setValues(values)
         }
+      }
+
+      // 3. Check for statement data
+      const statementDataJSON = json.data.metadata?.listOfStatementData
+
+      if (statementDataJSON) {
+        const listOfStatementData = statementDataJSON as StatementData[]
+        setListOfStatementData(listOfStatementData)
       }
     })
 
@@ -90,29 +102,25 @@ export default function Home() {
     setMessages((messages) => [...messages, userMessage])
   }
 
-  function getTableType(): "range" | "instant" {
-
-    if (lineItems.lineItems === undefined) {
-      return "instant"
-    }
-
-    const [key, firstLineItem] = Object.entries(lineItems.lineItems)[0]
-    if ((firstLineItem) && isRangePeriod(firstLineItem.period)) {
-      return "range"
-    }
-    return "instant"
-  }
-
   async function onValueSelected(value: Value) {
+    console.log(listOfStatementData.length)
+    // 1. Find relevant statement data
+    const statementData = listOfStatementData.find((statementData) => {
+      return (value.filingId === statementData.filingId && value.statementSource === statementData.statement)
+    })
 
-    try {
-      const response = await axios.get(domain + `/api/pFiling/${value.filingId}/${value.statementSource}`)
-      const data = response.data
-      const lineItems = data.data as TableOfLineItems
-      setLineItems(lineItems)
-      openModal()
-    } catch (e) {
-      console.log(e)
+    if (statementData) {
+      // 2. Convert statement data to line items
+      if (statementData.type === "LINE_ITEMS") {
+        const lineItems = JSON.parse(statementData.data )as TableOfLineItems
+        setHighlightInfo({ sectionKey: value.sectionSource, value: parseInt(value.value) })
+        setLineItems(lineItems)
+        openModal()
+      }
+
+    } else {
+      console.log("Statement data does not exist")
+      // TODO: Fetch manually from API
     }
     
   }
@@ -138,6 +146,7 @@ export default function Home() {
         <Modal show={showModal} handleClose={closeModal}>
           <FinancialStatement 
           tableOfLineItems={lineItems}  
+          highlightInfo={highlightInfo}
           />
         </Modal>
       </main>
