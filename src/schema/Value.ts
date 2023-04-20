@@ -6,5 +6,5 @@ export type Value = {
   statementSource: string;
   sectionSource: string;
   filingId: string;
-  multiplier: 'NONE' | 'IN_THOUSANDS' | 'IN_MILLIONS';
+  multiplier: "NONE" | "IN_THOUSANDS" | "IN_MILLIONS";
 };

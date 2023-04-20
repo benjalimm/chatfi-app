@@ -7,10 +7,7 @@ export default function convertFinalOutputToString(
 ): string {
   let answer: string = rawAnswer;
   values.forEach((value) => {
-    answer = answer.replace(
-      `@${value.key}`,
-      outputValueString(value)
-    );
+    answer = answer.replace(`@${value.key}`, outputValueString(value));
   });
   return answer;
 }

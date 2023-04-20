@@ -28,5 +28,8 @@ export function isInstantPeriod(period: Period): period is InstantPeriod {
 }
 
 export function isRangePeriod(period: Period): period is RangePeriod {
-  return (period as RangePeriod).startDate !== undefined && (period as RangePeriod).endDate !== undefined;
+  return (
+    (period as RangePeriod).startDate !== undefined &&
+    (period as RangePeriod).endDate !== undefined
+  );
 }

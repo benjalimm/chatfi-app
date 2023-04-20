@@ -1,26 +1,40 @@
-import React from 'react';
-import { TableOfLineItems, isInstantPeriod, isRangePeriod, Period, LineItem } from '@/schema/TableOfLineItems';
-import { formatCurrencyNumber, camelCaseToNormalText, formatDateRange, convertDateStringToMonthYear } from '@/utils/valueUtils';
+import React from "react";
+import {
+  TableOfLineItems,
+  isInstantPeriod,
+  isRangePeriod,
+  Period,
+  LineItem,
+} from "@/schema/TableOfLineItems";
+import {
+  formatCurrencyNumber,
+  camelCaseToNormalText,
+  formatDateRange,
+  convertDateStringToMonthYear,
+} from "@/utils/valueUtils";
 
 type FinancialStatementProps = {
   tableOfLineItems: TableOfLineItems;
-  highlightInfo?: { sectionKey: string, value: number }
+  highlightInfo?: { sectionKey: string; value: number };
 };
 
-const FinancialStatement: React.FC<FinancialStatementProps> = ({ 
-  tableOfLineItems, highlightInfo }) => {
-
+const FinancialStatement: React.FC<FinancialStatementProps> = ({
+  tableOfLineItems,
+  highlightInfo,
+}) => {
   function getKeyFromPeriod(period: Period): string {
-    return isInstantPeriod(period) ? period.instant : `${period.startDate} - ${period.endDate}`;
+    return isInstantPeriod(period)
+      ? period.instant
+      : `${period.startDate} - ${period.endDate}`;
   }
 
   function getDateStringFromPeriod(period: Period): string {
-    const key = getKeyFromPeriod(period)
+    const key = getKeyFromPeriod(period);
 
     if (isInstantPeriod(period)) {
-      return convertDateStringToMonthYear(key)
+      return convertDateStringToMonthYear(key);
     }
-    return formatDateRange(key)
+    return formatDateRange(key);
   }
 
   function isHighlighted(lineItemKey: string, value: number | null): boolean {
@@ -43,20 +57,23 @@ const FinancialStatement: React.FC<FinancialStatementProps> = ({
   const periods: Period[] = [];
   Object.values(lineItemGroups).forEach((lineItems) => {
     lineItems.forEach((item) => {
-      if (!periods.find((period) => getKeyFromPeriod(period) === getKeyFromPeriod(item.period))) {
+      if (
+        !periods.find(
+          (period) => getKeyFromPeriod(period) === getKeyFromPeriod(item.period)
+        )
+      ) {
         periods.push(item.period);
       }
-      
     });
   });
-  
+
   return (
     <div className="w-full h-full">
       <table className="w-full h-full table-auto">
         <thead>
           <tr>
             <th className="border px-4 py-2">Line Item</th>
-            { periods.map((period) => (
+            {periods.map((period) => (
               <th key={getKeyFromPeriod(period)} className="border px-4 py-2">
                 {getDateStringFromPeriod(period)}
               </th>
@@ -75,11 +92,16 @@ const FinancialStatement: React.FC<FinancialStatementProps> = ({
                 });
 
                 const value = lineItem ? parseInt(lineItem.value) : null;
-                const highlightClass = isHighlighted(key, value) ? 'bg-green-500' : '';
+                const highlightClass = isHighlighted(key, value)
+                  ? "bg-green-500"
+                  : "";
 
                 return (
-                  <td key={getKeyFromPeriod(period)} className={`border px-4 py-2 ${highlightClass}`}>
-                    {lineItem && value ? formatCurrencyNumber(value) : '-'}
+                  <td
+                    key={getKeyFromPeriod(period)}
+                    className={`border px-4 py-2 ${highlightClass}`}
+                  >
+                    {lineItem && value ? formatCurrencyNumber(value) : "-"}
                   </td>
                 );
               })}

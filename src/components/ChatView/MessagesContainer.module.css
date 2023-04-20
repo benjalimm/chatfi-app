@@ -15,7 +15,7 @@
   display: flex;
   font-size: 14px;
   width: 100%;
-  font: 'Inter';
+  font: "Inter";
   animation: fadeInFromBottom 0.2s ease-in-out;
   overflow-wrap: break-word;
 }
@@ -47,7 +47,6 @@
   margin-right: 10px;
   margin-left: 0px;
 }
-
 
 @keyframes fadeInFromBottom {
   0% {
