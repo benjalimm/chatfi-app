@@ -20,7 +20,6 @@ export default function ValueCell({
     valueString = valueString.substring(0, 30) + "..."
   }
   
-    
   // Parse title
   let MAX_TITLE_LENGTH = 30
   let title: string = value.title

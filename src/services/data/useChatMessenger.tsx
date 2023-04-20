@@ -13,6 +13,7 @@ type Result = {
 }
 
 export default function useChatMessenger(): Result  {
+  const foo = ""
   const [messages, setMessages] = useState<Message[]>([{ id: "", text: `You can type any query that pertains to Coinbase's latest 10-Q. For example, you could ask something like "What acquisitions did Coinbase make in 2022?"`, isBot: true }]);
   const [values, setValues] = useState<Value[]>([])  
   const [isChatLoading, setIsChatLoading] = useState<boolean>(false);
