@@ -15,7 +15,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: #2D2D2D;
+  background-color: #2d2d2d;
   border-radius: 12px;
 }
 
@@ -30,12 +30,12 @@
   text-align: center;
   font-size: 14px;
   padding: 0px 5px;
-  color: #A0E887;
+  color: #a0e887;
   word-wrap: overflow;
 }
 
 .negativeValue {
-  color: #E05252;
+  color: #e05252;
 }
 
 .statementSource {
@@ -50,7 +50,6 @@
   text-align: center;
   font-size: 10px;
   margin-bottom: 10px;
-
 }
 
 @keyframes fadeInFromBottom {
